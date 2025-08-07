@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/namung08/spring-cloud-msa-labs.git
+server:
+  port: 8888
