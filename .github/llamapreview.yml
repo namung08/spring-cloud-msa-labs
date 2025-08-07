@@ -1,0 +1,9 @@
+llm: gpt-4
+language: ko
+review:
+  - summary
+  - code_quality
+  - suggestions
+trigger:
+  - pull_request
+  - pull_request_review
