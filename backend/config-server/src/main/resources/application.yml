@@ -1,10 +1,13 @@
+server:
+  port: 8888
+
 spring:
   application:
     name: config-server
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: https://github.com/namung08/spring-cloud-msa-labs.git
-server:
-  port: 8888
+        native:
+          search-locations: file:///${user.dir}/backend/config-repo
