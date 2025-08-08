@@ -10,5 +10,5 @@ public interface OrderService {
 
 	List<Order> findAll();
 
-	void createOrder(OrderRequest order);
+	Order createOrder(OrderRequest order);
 }
