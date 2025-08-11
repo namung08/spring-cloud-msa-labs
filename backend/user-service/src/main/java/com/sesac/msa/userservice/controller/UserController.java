@@ -36,6 +36,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
+	@Operation(summary = "로그인", description = "이메일과 패스워드로 로그인하고 JWT 토큰을 발급받습니다")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
 		try {
 			return ResponseEntity.ok(service.login(loginRequest));
