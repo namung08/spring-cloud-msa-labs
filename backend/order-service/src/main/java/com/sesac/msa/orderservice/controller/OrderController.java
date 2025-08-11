@@ -2,12 +2,16 @@ package com.sesac.msa.orderservice.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sesac.msa.orderservice.dto.request.OrderRequest;
 import com.sesac.msa.orderservice.entity.Order;
 import com.sesac.msa.orderservice.service.OrderService;
 
@@ -36,5 +40,16 @@ public class OrderController {
 	@GetMapping("")
 	public ResponseEntity<List<Order>> getProducts() {
 		return ResponseEntity.ok(service.findAll());
+	}
+
+	@PostMapping
+	public ResponseEntity<Order> createOrder(@RequestBody OrderRequest orderRequest) {
+		try {
+			Order order = service.createOrder(orderRequest);
+
+			return ResponseEntity.status(HttpStatus.CREATED).body(order);
+		} catch (RuntimeException e) {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 }
