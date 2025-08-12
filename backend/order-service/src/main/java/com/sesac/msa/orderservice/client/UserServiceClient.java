@@ -8,7 +8,7 @@ import com.sesac.msa.orderservice.client.dto.UserResponse;
 
 @FeignClient(name = "user-service")
 public interface UserServiceClient {
-	String BASE_URL = "/api/v1/users";
+	String BASE_URL = "/api/users";
 	@GetMapping(BASE_URL+"/{id}")
 	UserResponse getUserById(@PathVariable Long id);
 }

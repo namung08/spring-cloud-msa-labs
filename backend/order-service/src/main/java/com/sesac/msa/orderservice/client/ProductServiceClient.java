@@ -8,7 +8,7 @@ import com.sesac.msa.orderservice.client.dto.ProductResponse;
 
 @FeignClient(name = "product-service")
 public interface  ProductServiceClient {
-	String BASE_URL = "/api/v1/products";
+	String BASE_URL = "/api/products";
 	@GetMapping(BASE_URL+"/{id}")
 	ProductResponse getProductById(@PathVariable Long id);
 }
