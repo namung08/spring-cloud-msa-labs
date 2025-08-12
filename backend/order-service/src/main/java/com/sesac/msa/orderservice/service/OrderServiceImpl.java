@@ -54,6 +54,11 @@ public class OrderServiceImpl implements OrderService {
 		return repository.save(orderEntity);
 	}
 
+	@Override
+	public List<Order> getOrdersMyUserId(Long userId) {
+		return repository.findByUserIdOrderByCreatedAtDesc(userId);
+	}
+
 	private void notFount(Object object, String message) {
 		if(object == null) throw new RuntimeException(message);
 	}

@@ -16,10 +16,11 @@ import com.sesac.msa.orderservice.entity.Order;
 import com.sesac.msa.orderservice.service.OrderService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 	private final OrderService service;
@@ -51,5 +52,19 @@ public class OrderController {
 		} catch (RuntimeException e) {
 			return ResponseEntity.badRequest().build();
 		}
+	}
+
+	@GetMapping("/my")
+	@Operation(summary = "내 주문 목록", description = "로그인한 사용자의 주문 목록을 조회")
+	public ResponseEntity<List<Order>> getMyOrders(HttpServletRequest request) {
+		// api gateway 에서 전달한 x-user-id 헤더에서 사용자 id 추출
+		String header = request.getHeader("X-User-Id");
+		if (header == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		Long userId = Long.valueOf(header);
+
+		List<Order> orders = service.getOrdersMyUserId(userId);
+		return ResponseEntity.ok(orders);
 	}
 }

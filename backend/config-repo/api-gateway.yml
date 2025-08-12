@@ -13,18 +13,18 @@ spring:
             predicates:
               - Path=/api/users/** # /api/users/** -> /users/**
             filters:
-              - StripPrefix=1
+              - StripPrefix=0
 
           - id: product-service
             uri: lb://product-service
             predicates:
               - Path=/api/products/**
             filters:
-              - StripPrefix=1
+              - StripPrefix=0
 
           - id: order-service
             uri: lb://order-service
             predicates:
               - Path=/api/orders/**
             filters:
-              - StripPrefix=1
+              - StripPrefix=0

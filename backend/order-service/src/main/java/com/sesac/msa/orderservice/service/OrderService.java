@@ -11,4 +11,6 @@ public interface OrderService {
 	List<Order> findAll();
 
 	Order createOrder(OrderRequest order);
+
+	List<Order> getOrdersMyUserId(Long userId);
 }
