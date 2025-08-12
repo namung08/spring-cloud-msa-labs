@@ -11,6 +11,7 @@ import com.sesac.msa.orderservice.client.dto.ProductResponse;
 import com.sesac.msa.orderservice.client.dto.UserResponse;
 import com.sesac.msa.orderservice.dto.request.OrderRequest;
 import com.sesac.msa.orderservice.entity.Order;
+import com.sesac.msa.orderservice.facada.UserServiceFacade;
 import com.sesac.msa.orderservice.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository repository;
 	private final UserServiceClient userServiceClient;
+	private final UserServiceFacade userServiceFacade;
 	private final ProductServiceClient productServiceClient;
 
 	@Override
@@ -36,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Order createOrder(OrderRequest order) {
-		UserResponse user = userServiceClient.getUserById(order.userId());
+		UserResponse user = userServiceFacade.getUserWithFallback(order.userId());
 		ProductResponse product = productServiceClient.getProductById(order.productId());
 		notFount(user, "User Not Found");
 		notFount(product, "Product Not Found");
