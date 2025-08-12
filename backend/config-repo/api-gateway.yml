@@ -11,20 +11,20 @@ spring:
           - id: user-service
             uri: lb://user-service
             predicates:
-              - Path=/api/v1/users/** # /api/users/** -> /users/**
+              - Path=/api/users/** # /api/users/** -> /users/**
             filters:
-              - StripPrefix=1
+              - StripPrefix=0
 
           - id: product-service
             uri: lb://product-service
             predicates:
-              - Path=/api/v1/products/**
+              - Path=/api/products/**
             filters:
-              - StripPrefix=1
+              - StripPrefix=0
 
           - id: order-service
             uri: lb://order-service
             predicates:
-              - Path=/api/v1/orders/**
+              - Path=/api/orders/**
             filters:
-              - StripPrefix=1
+              - StripPrefix=0
