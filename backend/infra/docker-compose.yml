@@ -20,6 +20,14 @@ services:
       - ./mysql/init:/docker-entrypoint-initdb.d
     networks:
       - msa-network
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: mas-zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      msa-network:
+
 
 volumes:
   mysql-data:
