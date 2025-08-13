@@ -1,6 +1,7 @@
 package com.sesac.msa.orderservice.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import com.sesac.msa.orderservice.client.dto.ProductResponse;
 import com.sesac.msa.orderservice.client.dto.UserResponse;
 import com.sesac.msa.orderservice.dto.request.OrderRequest;
 import com.sesac.msa.orderservice.entity.Order;
+import com.sesac.msa.orderservice.event.OrderCreatedEvent;
+import com.sesac.msa.orderservice.event.OrderEventPublisher;
 import com.sesac.msa.orderservice.facada.UserServiceFacade;
 import com.sesac.msa.orderservice.repository.OrderRepository;
 
@@ -26,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
 	private final UserServiceFacade userServiceFacade;
 	private final ProductServiceClient productServiceClient;
 	private final Tracer tracer;
+	private final OrderEventPublisher orderEventPublisher;
 
 	@Override
 	public Order findById(Long id) {
@@ -55,15 +59,26 @@ public class OrderServiceImpl implements OrderService {
 			notFount(user, "User Not Found");
 			notFount(product, "Product Not Found");
 
-			if (product.stockQuantity() < order.quantity()) {
-				throw new RuntimeException("Out of Stock!");
-			}
+			// if (product.stockQuantity() < order.quantity()) {
+			// 	throw new RuntimeException("Out of Stock!");
+			// }
 
 			Order orderEntity = Order.builder()
 				.userId(user.id())
 				.totalAmount(product.price().multiply(BigDecimal.valueOf(order.quantity())))
 				.status("COMPLETED")
 				.build();
+
+			// 비동기 이벤트 발행
+			OrderCreatedEvent event = new OrderCreatedEvent(
+				orderEntity.getId(),
+				order.userId(),
+				order.productId(),
+				order.quantity(),
+				orderEntity.getTotalAmount(),
+				LocalDateTime.now()
+			);
+			orderEventPublisher.publishOrderCreated(event);
 
 			return repository.save(orderEntity);
 		} catch (Exception e) {
