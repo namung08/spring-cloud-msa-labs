@@ -57,6 +57,8 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-tracing-bridge-otel'
     implementation 'io.opentelemetry:opentelemetry-exporter-zipkin'
+
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 dependencyManagement {
     imports {
