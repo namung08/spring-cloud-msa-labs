@@ -18,6 +18,6 @@ public class OrderCreatedEvent implements Serializable {
 	private Long userId;
 	private Long productId;
 	private Integer quantity;
-	private BigDecimal totlaAmount;
+	private BigDecimal totalAmount;
 	private LocalDateTime createdAt;
 }
