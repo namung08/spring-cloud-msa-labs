@@ -14,6 +14,8 @@ import com.sesac.msa.orderservice.entity.Order;
 import com.sesac.msa.orderservice.facada.UserServiceFacade;
 import com.sesac.msa.orderservice.repository.OrderRepository;
 
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
 	private final UserServiceClient userServiceClient;
 	private final UserServiceFacade userServiceFacade;
 	private final ProductServiceClient productServiceClient;
+	private final Tracer tracer;
 
 	@Override
 	public Order findById(Long id) {
@@ -38,22 +41,37 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Order createOrder(OrderRequest order) {
-		UserResponse user = userServiceFacade.getUserWithFallback(order.userId());
-		ProductResponse product = productServiceClient.getProductById(order.productId());
-		notFount(user, "User Not Found");
-		notFount(product, "Product Not Found");
+		// span 이름과 같은 것을 설정
+		Span span = tracer.nextSpan()
+			.name("Create Order")
+			.tag("order.userId", order.userId())
+			.tag("order.productId", order.productId())
+			.tag("order.quantity", order.quantity())
+			.start();
+		// span 활성화
+		try (Tracer.SpanInScope sis = tracer.withSpan(span)) {
+			UserResponse user = userServiceFacade.getUserWithFallback(order.userId());
+			ProductResponse product = productServiceClient.getProductById(order.productId());
+			notFount(user, "User Not Found");
+			notFount(product, "Product Not Found");
 
-		if(product.stockQuantity() < order.quantity()) {
-			throw new RuntimeException("Out of Stock!");
+			if (product.stockQuantity() < order.quantity()) {
+				throw new RuntimeException("Out of Stock!");
+			}
+
+			Order orderEntity = Order.builder()
+				.userId(user.id())
+				.totalAmount(product.price().multiply(BigDecimal.valueOf(order.quantity())))
+				.status("COMPLETED")
+				.build();
+
+			return repository.save(orderEntity);
+		} catch (Exception e) {
+			span.tag("error", e.getMessage());
+			throw e;
+		} finally {
+			span.end();
 		}
-
-		Order orderEntity = Order.builder()
-			.userId(user.id())
-			.totalAmount(product.price().multiply(BigDecimal.valueOf(order.quantity())))
-			.status("COMPLETED")
-			.build();
-
-		return repository.save(orderEntity);
 	}
 
 	@Override
