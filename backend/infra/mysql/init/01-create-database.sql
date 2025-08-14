@@ -1,7 +1,10 @@
-drop database if exists `user_service_db`;
-drop database if exists `product_service_db`;
-drop database if exists `order_service_db`;
 
-create database if not exists `user_service_db` character set utf8mb4 collate utf8mb4_unicode_ci;
-create database if not exists `product_service_db` character set utf8mb4 collate utf8mb4_unicode_ci;
-create database if not exists `order_service_db` character set utf8mb4 collate utf8mb4_unicode_ci;
+DROP DATABASE IF EXISTS `user_service_db`;
+DROP DATABASE IF EXISTS `product_service_db`;
+DROP DATABASE IF EXISTS `order_service_db`;
+DROP DATABASE IF EXISTS `payment_service_db`;
+
+CREATE DATABASE `user_service_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE `product_service_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE `order_service_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE `payment_service_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
