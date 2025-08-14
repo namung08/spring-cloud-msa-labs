@@ -31,6 +31,16 @@ public class RabbitConfig {
 	@Value("${order.event.queue.inventory-failed}")
 	private String inventoryFailedQueue;
 
+	@Value("${order.event.queue.payment-completed}")
+	private String paymentCompletedQueue;
+
+	@Value("${order.event.queue.payment-failed}")
+	private String paymentFailedQueue;
+
+	@Value("${order.event.queue.inventory-restore}")
+	private String inventoryRestoreQueue;
+
+
 	@Value("${order.event.routing-key.notification}")
 	private String notificationRoutingKey;
 
@@ -42,6 +52,15 @@ public class RabbitConfig {
 
 	@Value("${order.event.routing-key.inventory-failed}")
 	private String inventoryFailedRoutingKey;
+
+	@Value("${order.event.routing-key.payment-completed}")
+	private String paymentCompletedRoutingKey;
+
+	@Value("${order.event.routing-key.payment-failed}")
+	private String paymentFailedRoutingKey;
+
+	@Value("${order.event.routing-key.inventory-restore}")
+	private String inventoryRestoreRoutingKey;
 
 	// Exchange 정의
 	@Bean
@@ -68,6 +87,21 @@ public class RabbitConfig {
 	@Bean
 	public Queue inventoryFailedQueue() {
 		return QueueBuilder.durable(inventoryFailedQueue).build();
+	}
+
+	@Bean
+	public Queue paymentCompletedQueue() {
+		return QueueBuilder.durable(paymentCompletedQueue).build();
+	}
+
+	@Bean
+	public Queue paymentFailedQueue() {
+		return QueueBuilder.durable(paymentFailedQueue).build();
+	}
+
+	@Bean
+	public Queue inventoryRestoreQueue() {
+		return QueueBuilder.durable(inventoryRestoreQueue).build();
 	}
 
 	// Binding 정의
@@ -99,9 +133,31 @@ public class RabbitConfig {
 			.with(inventoryFailedRoutingKey);
 	}
 
+	@Bean
+	public Binding paymentCompletedBinding() {
+		return BindingBuilder.bind(paymentCompletedQueue())
+			.to(orderExchange())
+			.with(paymentCompletedRoutingKey);
+	}
+
+	@Bean
+	public Binding paymentFailedBinding() {
+		return BindingBuilder.bind(paymentFailedQueue())
+			.to(orderExchange())
+			.with(paymentFailedRoutingKey);
+	}
+
+	@Bean
+	public Binding inventoryRestoreBinding() {
+		return BindingBuilder.bind(inventoryRestoreQueue())
+			.to(orderExchange())
+			.with(inventoryRestoreRoutingKey);
+	}
+
 	// JSON 메시지 컨버터 추가
 	@Bean
 	public MessageConverter messageConverter() {
 		return new Jackson2JsonMessageConverter();
 	}
 }
+
