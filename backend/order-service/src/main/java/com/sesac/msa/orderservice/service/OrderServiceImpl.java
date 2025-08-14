@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 			Order orderEntity = Order.builder()
 				.userId(user.id())
 				.totalAmount(product.price().multiply(BigDecimal.valueOf(order.quantity())))
-				.status("COMPLETED")
+				.status("PENDING")
 				.build();
 
 			// 비동기 이벤트 발행

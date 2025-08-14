@@ -8,4 +8,6 @@ public interface ProductService {
 	Product findById(Long id);
 
 	List<Product> findAll();
+
+	void decreaseStock(Long productId, Integer quantity);
 }
