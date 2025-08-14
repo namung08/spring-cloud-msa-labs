@@ -12,6 +12,7 @@ import com.sesac.msa.orderservice.client.dto.ProductResponse;
 import com.sesac.msa.orderservice.client.dto.UserResponse;
 import com.sesac.msa.orderservice.dto.request.OrderRequest;
 import com.sesac.msa.orderservice.entity.Order;
+import com.sesac.msa.orderservice.entity.OrderStatus;
 import com.sesac.msa.orderservice.event.OrderCreatedEvent;
 import com.sesac.msa.orderservice.event.OrderEventPublisher;
 import com.sesac.msa.orderservice.facada.UserServiceFacade;
@@ -66,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
 			Order orderEntity = Order.builder()
 				.userId(user.id())
 				.totalAmount(product.price().multiply(BigDecimal.valueOf(order.quantity())))
-				.status("PENDING")
+				.status(OrderStatus.PENDING)
 				.build();
 
 			// 비동기 이벤트 발행
