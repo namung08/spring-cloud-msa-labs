@@ -70,18 +70,20 @@ public class OrderServiceImpl implements OrderService {
 				.status(OrderStatus.PENDING)
 				.build();
 
+			Order saved = repository.save(orderEntity);
+
 			// 비동기 이벤트 발행
 			OrderCreatedEvent event = new OrderCreatedEvent(
-				orderEntity.getId(),
+				saved.getId(),
 				order.userId(),
 				order.productId(),
 				order.quantity(),
-				orderEntity.getTotalAmount(),
+				saved.getTotalAmount(),
 				LocalDateTime.now()
 			);
 			orderEventPublisher.publishOrderCreated(event);
 
-			return repository.save(orderEntity);
+			return saved;
 		} catch (Exception e) {
 			span.tag("error", e.getMessage());
 			throw e;
